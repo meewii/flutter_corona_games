@@ -9,6 +9,11 @@ environment:
 dependencies:
   args: ^2.0.0
   shelf: ^1.1.0
+  json_annotation: ^4.0.1
+  shelf_router: ^1.0.0
 
 dev_dependencies:
   pedantic: ^1.9.0
+  build_runner: ^1.12.2
+  json_serializable: ^4.1.0
+
