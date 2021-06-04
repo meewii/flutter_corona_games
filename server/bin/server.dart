@@ -5,7 +5,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
 
-import 'endpoints/endpoints_registry.dart';
+import 'endpoints/api_registry.dart';
 import 'endpoints/four_oh_four.dart';
 
 const _localhost = 'localhost';
@@ -32,7 +32,15 @@ void main(List<String> args) async {
     return;
   }
 
-  final api = EndpointsRegistry();
+  final firebasePath = String.fromEnvironment('FIREBASE_PATH');
+  if (firebasePath.isEmpty) {
+    stdout.writeln('Could not parse compile time variable FIREBASE_PATH.');
+    // 64: command line usage error
+    exitCode = 64;
+    return;
+  }
+
+  final api = ApiRegistry(firebasePath);
   final router = Router();
 
   router.mount('/api/', api.router);

@@ -6,26 +6,44 @@ fi
 
 if [ -z "$1" ]
   then
-    echo "Need to add app name ./deploy_to_heroku.sh <app-name> \"<deploy message>\""
+    echo "Need to add app name ./deploy_to_heroku.sh <app-name> <firebase-name> \"<deploy message>\""
     exit -1
 fi
 
 if [ -z "$2" ]
   then
-    echo "Need to add app name ./deploy_to_heroku.sh <app-name> \"<deploy message>\""
+    echo "Need to add firebase name ./deploy_to_heroku.sh <app-name> <firebase-name> \"<deploy message>\""
+    exit -1
+fi
+
+if [ -z "$3" ]
+  then
+    echo "Need to add deploy message ./deploy_to_heroku.sh <app-name> <firebase-name> \"<deploy message>\""
     exit -1
 fi
 
 APP_NAME="$1"
-COMMIT_MESSAGE="$2"
+FIREBASE_PATH="$2"
+COMMIT_MESSAGE="$3"
 CURRENT_DIR=${PWD}
 SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+
+echo "==================================="
+echo "==================================="
+echo "Deploy configuration:"
+echo "Heroku app name: $APP_NAME"
+echo "Firebase name: $FIREBASE_PATH"
+echo "Heroku commit message: $COMMIT_MESSAGE"
+echo "==================================="
+echo "==================================="
+
 
 echo "Move to source folder, delete build"
 cd $SOURCE_DIR
 rm -rf build
 
-echo "Git clone from heroku"
+echo "Git clone from heroku $APP_NAME"
 heroku git:clone -a $APP_NAME build
 
 echo "Add Procfile"
@@ -33,7 +51,7 @@ echo "web: bin/server" > build/Procfile
 
 echo "Compiled Dart executable"
 dart pub get
-dart compile exe bin/server.dart -o build/bin/server
+dart compile exe -DFIREBASE_PATH="${FIREBASE_PATH}" bin/server.dart -o build/bin/server
 
 echo "Deploy to Heroku"
 cd build
