@@ -4,7 +4,16 @@ import 'dart:math';
 
 import 'package:http/http.dart' as http;
 
+Uri firebaseUrl(String path, [Map<String, dynamic>? queryParameters]) {
+  return Uri.https(
+      'firestore.googleapis.com',
+      'v1/projects/${getFirebasePath()}/databases/(default)/documents/$path',
+      queryParameters);
+}
+
 String getFirebasePath() {
+  // TODO: maybe get it from the backend Config Vars ?
+  // final firebasePath = Platform.environment['FIREBASE_PATH'] ?? throw
   const firebasePath = String.fromEnvironment('FIREBASE_PATH');
   if (firebasePath.isEmpty) {
     stdout.writeln('Could not parse compile time variable FIREBASE_PATH.');
@@ -14,17 +23,12 @@ String getFirebasePath() {
   return firebasePath;
 }
 
-Future<String> listDocuments(String firebase, String path) async {
-  final url = Uri.https('firestore.googleapis.com',
-      'v1/projects/$firebase/databases/(default)/documents/$path');
-  return (await http.get(url)).body;
+Future<String> listDocuments(String path) async {
+  return (await http.get(firebaseUrl(path))).body;
 }
 
-Future<List<String>> listIDocumentIds(String firebase, String path) async {
-  final url = Uri.https(
-      'firestore.googleapis.com',
-      'v1/projects/$firebase/databases/(default)/documents/$path',
-      {'mask.fieldPaths': '__name__'});
+Future<List<String>> listIDocumentIds(String path) async {
+  final url = firebaseUrl(path, {'mask.fieldPaths': '__name__'});
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final List documents = convert.jsonDecode(response.body)['documents'];

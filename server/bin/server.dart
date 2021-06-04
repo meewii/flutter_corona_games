@@ -33,8 +33,10 @@ void main(List<String> args) async {
     return;
   }
 
+  // calls getFirebasePath to validate it exists
   final firebasePath = getFirebasePath();
-  final api = ApiRegistry(firebasePath);
+
+  final api = ApiRegistry();
   final router = Router();
 
   router.mount('/api/', api.router);
@@ -46,8 +48,8 @@ void main(List<String> args) async {
       .addHandler(router);
 
   var server = await io.serve(handler, host, port);
-  print(
-      'Serving data from $firebasePath at http://${server.address.host}:${server.port}');
+  print('Serving data from $firebasePath at '
+      'http://${server.address.host}:${server.port}');
 }
 
 shelf.Response _echoRequest(shelf.Request request) =>

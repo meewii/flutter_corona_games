@@ -9,16 +9,16 @@ import 'v1/endpoints_registry.dart' as v1;
 class ApiRegistry {
   final Router router = Router();
 
-  ApiRegistry(String firebasePath) {
+  ApiRegistry() {
     // TODO: how to make an automatic fall-back?
-    router.mount('/v1/', v1.createHandler(firebasePath));
+    router.mount('/v1/', v1.createHandler());
     router.all('/test/<ignored|.*>', _testRequest);
     router.add404();
   }
 }
 
 Future<shelf.Response> _testRequest(shelf.Request request) async {
-  final documents = await listDocuments(getFirebasePath(), 'rooms');
+  final documents = await listDocuments('rooms');
   return shelf.Response.ok(documents,
       headers: {'Content-Type': 'application/json'});
 
