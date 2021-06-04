@@ -27,7 +27,7 @@ Future<String> listDocuments(String path) async {
   return (await http.get(firebaseUrl(path))).body;
 }
 
-Future<List<String>> listIDocumentIds(String path) async {
+Future<List<String>> listDocumentIds(String path) async {
   final url = firebaseUrl(path, {'mask.fieldPaths': '__name__'});
   final response = await http.get(url);
   if (response.statusCode == 200) {

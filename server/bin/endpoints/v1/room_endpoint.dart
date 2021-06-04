@@ -45,7 +45,7 @@ Future<shelf.Response> create(shelf.Request request) async {
 Future<shelf.Response> createImpl(String hostName) async {
   final now = DateTime.now().toUtc();
 
-  final existingRooms = await listIDocumentIds('rooms');
+  final existingRooms = await listDocumentIds('rooms');
   var newRoomId = generateRandomRoomId();
   while (existingRooms.contains(newRoomId)) {
     newRoomId = generateRandomRoomId();
