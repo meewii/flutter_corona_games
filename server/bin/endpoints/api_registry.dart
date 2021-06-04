@@ -18,8 +18,7 @@ class ApiRegistry {
 }
 
 Future<shelf.Response> _testRequest(shelf.Request request) async {
-  final documents =
-      await listDocuments(String.fromEnvironment('FIREBASE_PATH'), 'rooms');
+  final documents = await listDocuments(getFirebasePath(), 'rooms');
   return shelf.Response.ok(documents,
       headers: {'Content-Type': 'application/json'});
 

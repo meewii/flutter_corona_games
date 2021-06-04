@@ -1,7 +1,18 @@
 import 'dart:convert' as convert;
+import 'dart:io';
 import 'dart:math';
 
 import 'package:http/http.dart' as http;
+
+String getFirebasePath() {
+  const firebasePath = String.fromEnvironment('FIREBASE_PATH');
+  if (firebasePath.isEmpty) {
+    stdout.writeln('Could not parse compile time variable FIREBASE_PATH.');
+    exitCode = 64;
+    return '';
+  }
+  return firebasePath;
+}
 
 Future<String> listDocuments(String firebase, String path) async {
   final url = Uri.https('firestore.googleapis.com',

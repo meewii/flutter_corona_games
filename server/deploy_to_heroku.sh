@@ -31,10 +31,10 @@ SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 echo "==================================="
 echo "==================================="
-echo "Deploy configuration:"
-echo "Heroku app name: $APP_NAME"
-echo "Firebase name: $FIREBASE_PATH"
-echo "Heroku commit message: $COMMIT_MESSAGE"
+echo "  Deploy configuration:"
+echo "  Heroku app name: $APP_NAME"
+echo "  Firebase name: $FIREBASE_PATH"
+echo "  Heroku commit message: $COMMIT_MESSAGE"
 echo "==================================="
 echo "==================================="
 
@@ -51,7 +51,7 @@ echo "web: bin/server" > build/Procfile
 
 echo "Compiled Dart executable"
 dart pub get
-dart compile exe -DFIREBASE_PATH="${FIREBASE_PATH}" bin/server.dart -o build/bin/server
+dart compile exe --define=FIREBASE_PATH="${FIREBASE_PATH}" bin/server.dart -o build/bin/server
 
 echo "Deploy to Heroku"
 cd build
