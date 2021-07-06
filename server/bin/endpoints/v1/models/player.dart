@@ -15,4 +15,11 @@ class Player {
   factory Player.fromJson(String str) => _$PlayerFromJson(json.decode(str));
 
   String toJson() => json.encode(_$PlayerToJson(this));
+
+  Map<String, Object> toFirebase() => {
+        'fields': {
+          'lastPingAt': {'timestampValue': lastPingAt.toIso8601String()},
+          'name': {'stringValue': name}
+        }
+      };
 }

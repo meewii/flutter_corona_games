@@ -5,8 +5,9 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
 
-import 'endpoints/endpoints_registry.dart';
+import 'endpoints/api_registry.dart';
 import 'endpoints/four_oh_four.dart';
+import 'endpoints/utils.dart';
 
 const _localhost = 'localhost';
 const _hostname = '0.0.0.0';
@@ -32,7 +33,10 @@ void main(List<String> args) async {
     return;
   }
 
-  final api = EndpointsRegistry();
+  // calls getFirebasePath to validate it exists
+  final firebasePath = getFirebasePath();
+
+  final api = ApiRegistry();
   final router = Router();
 
   router.mount('/api/', api.router);
@@ -44,7 +48,8 @@ void main(List<String> args) async {
       .addHandler(router);
 
   var server = await io.serve(handler, host, port);
-  print('Serving at http://${server.address.host}:${server.port}');
+  print('Serving data from $firebasePath at '
+      'http://${server.address.host}:${server.port}');
 }
 
 shelf.Response _echoRequest(shelf.Request request) =>
