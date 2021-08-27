@@ -11,6 +11,8 @@ Uri firebaseUrl(String path, [Map<String, dynamic>? queryParameters]) {
       queryParameters);
 }
 
+String extractFirebaseId(String name) => name.split('/').last;
+
 String getFirebasePath() {
   // TODO: maybe get it from the backend Config Vars ?
   // final firebasePath = Platform.environment['FIREBASE_PATH'] ?? throw

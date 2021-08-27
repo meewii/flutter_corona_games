@@ -6,7 +6,8 @@ import 'room_endpoint.dart' as room;
 
 Handler createHandler() {
   final router = Router();
-  router.get('/room/<roomId>', room.get);
+  router.get('/room/<roomId>', room.getRoom);
+  router.get('/room/<roomId>/players', room.getPlayers);
   router.post('/room', room.create);
   router.add404();
   return router;

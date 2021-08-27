@@ -10,7 +10,7 @@ import 'models/player.dart';
 import 'models/room.dart';
 import 'models/session.dart';
 
-Future<shelf.Response> get(shelf.Request request, String roomId) async {
+Future<shelf.Response> getRoom(shelf.Request request, String roomId) async {
   final response = await http.get(firebaseUrl('rooms/$roomId'));
   if (response.statusCode > 399) {
     return shelf.Response(response.statusCode,
@@ -34,6 +34,24 @@ Future<shelf.Response> get(shelf.Request request, String roomId) async {
   final room = Room.fromFirebase(roomId, session, roomJson);
   return shelf.Response.ok(room.toJson(),
       headers: {'Content-Type': 'application/json'});
+}
+
+Future<shelf.Response> getPlayers(shelf.Request request, String roomId) async {
+  final response = await http.get(firebaseUrl('rooms/$roomId/players'));
+  if (response.statusCode > 399) {
+    return shelf.Response(response.statusCode,
+        body: response.body, headers: {'Content-Type': 'application/json'});
+  }
+
+  final List<dynamic> jsonList =
+      jsonDecode(response.body)['documents'];
+
+  final players = jsonList
+      .map((e) => Player.fromFirebase(e).toMap())
+      .toList(growable: false);
+
+  final json = jsonEncode(players);
+  return shelf.Response.ok(json, headers: {'Content-Type': 'application/json'});
 }
 
 Future<shelf.Response> create(shelf.Request request) async {
@@ -84,9 +102,6 @@ Future<shelf.Response> createImpl(String hostName) async {
         headers: {'Content-Type': 'application/json'});
   }
 
-  final room = Room(newRoomId, now, newPlayerId, null, 'rooms/$newRoomId',
-      'rooms/$newRoomId/players');
-
-  return shelf.Response.ok(room.toJson(),
+  return shelf.Response.ok(domainRoom.toJson(),
       headers: {'Content-Type': 'application/json'});
 }
